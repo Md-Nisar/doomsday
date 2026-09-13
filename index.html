@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      Pairs with public/404.html's redirect script: restores the originally
+      requested deep-link path (stored in sessionStorage before GitHub Pages'
+      404 fallback sent the browser here) before React Router ever reads
+      window.location, so the app boots straight into the correct route
+      instead of the homepage. Must run before src/main.tsx mounts the app —
+      placed first in <head>, and main.tsx's module script is deferred by
+      the browser regardless, so this always runs first. A no-op on every
+      normal navigation (nothing in sessionStorage to restore).
+    -->
+    <script>
+      (function () {
+        var redirect = sessionStorage.getItem('spa-redirect-path')
+        if (!redirect) return
+        sessionStorage.removeItem('spa-redirect-path')
+        history.replaceState(null, '', redirect)
+      })()
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="description"
+      content="An unofficial fan project tracking Avengers: Doomsday — a live countdown plus news, trailers, cast, characters, theories, rumors, and a timeline as they become real."
+    />
+    <link rel="canonical" href="https://avengers-doomsday.in/" />
+    <title>Avengers: Doomsday — Countdown &amp; Intelligence</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Avengers: Doomsday" />
+    <meta property="og:title" content="Avengers: Doomsday — Countdown & Intelligence" />
+    <meta
+      property="og:description"
+      content="An unofficial fan project tracking Avengers: Doomsday — a live countdown plus news, trailers, cast, characters, theories, rumors, and a timeline as they become real."
+    />
+    <meta property="og:url" content="https://avengers-doomsday.in/" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Avengers: Doomsday — Countdown & Intelligence" />
+    <meta
+      name="twitter:description"
+      content="An unofficial fan project tracking Avengers: Doomsday — a live countdown plus news, trailers, cast, characters, theories, rumors, and a timeline as they become real."
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

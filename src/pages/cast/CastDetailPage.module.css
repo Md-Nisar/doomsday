@@ -1,0 +1,4 @@
+.portrait {
+  max-width: 220px;
+  margin-block-end: var(--space-2);
+}

@@ -1,0 +1,108 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background: var(--color-bg-translucent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.skipLink {
+  position: absolute;
+  left: var(--space-4);
+  top: -48px;
+  background: var(--color-accent-solid);
+  color: var(--color-accent-foreground);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  transition: top var(--duration-base) var(--ease-standard);
+  z-index: var(--z-overlay);
+}
+
+.skipLink:focus {
+  top: var(--space-4);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.nav {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.navLink {
+  text-decoration: none;
+  transition: color var(--duration-base) var(--ease-standard);
+}
+
+.navLink:hover {
+  color: var(--color-text-primary);
+}
+
+.mobileNav {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.mobileNav ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--page-padding-inline);
+}
+
+.mobileNav a {
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+
+.disabled {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-faint);
+  cursor: default;
+  pointer-events: none;
+}
+
+.soon {
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 0.125rem var(--space-2);
+}
+
+@media (min-width: 768px) {
+  .nav {
+    display: block;
+  }
+
+  .menuToggle {
+    display: none;
+  }
+}

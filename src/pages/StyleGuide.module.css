@@ -1,0 +1,128 @@
+.page {
+  padding-block: var(--space-8) var(--space-9);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-block: var(--space-8) var(--space-7);
+}
+
+.introText {
+  max-width: var(--content-max-width);
+}
+
+.section {
+  padding-block: var(--space-8);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+@media (min-width: 600px) {
+  .colorGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .colorGrid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.swatchCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.swatch {
+  display: block;
+  width: 100%;
+  height: 48px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.typeScale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.typeRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.typeRow:last-child {
+  border-bottom: none;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .cardGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.surfaceDemo {
+  padding: var(--space-6);
+  min-width: 160px;
+  text-align: center;
+}
+
+.spacingScale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.spacingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.spacingRow > :first-child {
+  width: 6rem;
+  flex-shrink: 0;
+}
+
+.spacingBar {
+  display: block;
+  height: 12px;
+  background: var(--color-accent-solid);
+  border-radius: var(--radius-sm);
+}
+
+.footer {
+  padding-block: var(--space-7) var(--space-4);
+}

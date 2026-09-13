@@ -1,0 +1,116 @@
+.panel {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: var(--space-7) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--countdown-accent, var(--color-accent-solid)) 32%, transparent);
+  background: var(--countdown-bg, var(--color-bg));
+  overflow: hidden;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 15%, black 30%, transparent 85%);
+  opacity: 0.5;
+}
+
+.panel::after {
+  content: '';
+  position: absolute;
+  inset: -30% -10%;
+  z-index: 0;
+  background: radial-gradient(circle at 50% 10%, var(--countdown-glow, transparent), transparent 62%);
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel::after {
+    animation: countdown-pulse 6s ease-in-out infinite;
+  }
+}
+
+@keyframes countdown-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.wrapper,
+.complete {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+}
+
+.movieTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 0.9rem + 1.2vw, 1.75rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--countdown-accent, var(--color-accent));
+  text-align: center;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.separator {
+  align-self: center;
+  padding-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.4rem + 2.5vw, 3rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  color: var(--countdown-muted-text, var(--color-text-faint));
+}
+
+@media (max-width: 640px) {
+  .separator {
+    display: none;
+  }
+}
+
+.complete {
+  padding-block: var(--space-6);
+  text-align: center;
+}
+
+.completeText {
+  color: var(--countdown-accent, var(--color-accent));
+}
+
+.clockLink {
+  color: var(--countdown-accent, var(--color-accent));
+  font-size: var(--text-caption);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.clockLink:hover {
+  text-decoration-thickness: 2px;
+}

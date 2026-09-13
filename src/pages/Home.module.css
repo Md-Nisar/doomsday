@@ -1,0 +1,6 @@
+.countdownSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: var(--space-9);
+}

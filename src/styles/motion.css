@@ -1,0 +1,35 @@
+/**
+ * Ambient, decorative motion only. Anything animated here is inert unless
+ * the visitor has not asked for reduced motion.
+ */
+@keyframes ambient-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.ambient-glow {
+  background:
+    radial-gradient(circle at 25% 20%, rgba(var(--color-accent-rgb), 0.16), transparent 55%),
+    radial-gradient(circle at 75% 80%, rgba(255, 255, 255, 0.05), transparent 60%);
+  background-size: 160% 160%;
+}
+
+/*
+ * `background-position` can't be animated on the compositor, so the
+ * repaint is contained to this element's own box (`contain: paint`)
+ * rather than being reconsidered against whatever it's layered under —
+ * `will-change` only applies while the animation is actually running, so
+ * reduced-motion visitors never pay for a promoted layer they won't use.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .ambient-glow {
+    animation: ambient-drift var(--duration-ambient) ease-in-out infinite;
+    contain: paint;
+    will-change: background-position;
+  }
+}

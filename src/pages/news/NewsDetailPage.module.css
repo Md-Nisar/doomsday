@@ -1,0 +1,5 @@
+.body {
+  white-space: pre-line;
+  margin-block: var(--space-6);
+  max-width: var(--content-max-width);
+}
