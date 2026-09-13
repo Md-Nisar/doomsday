@@ -233,15 +233,55 @@ trigger in the workflow to match before relying on it.
 
 ### Base path
 
-`vite.config.ts` sets no `base` (it defaults to `/`). This is intentional
-and was verified against the production build: every emitted asset path
-(`/assets/...`, `/favicon/...`) is root-relative, which is exactly what
-`avengers-doomsday.in/` (an apex custom domain, not a `github.io/repo-name/`
-subpath) needs. Setting `base: '/repo-name/'` would break the custom-domain
-deployment, so it was deliberately not added. This is unaffected by which
-of the two owned domains is primary — an apex custom domain always needs
-root-relative paths — and only needs to change if the site is ever served
-from an unconfigured subpath instead of a custom domain.
+`vite.config.ts` sets `base: './'` (relative), not the Vite default of `/`.
+
+**Phase 13 launch-readiness fix.** The previous configuration (no `base`,
+defaulting to `/`) emitted root-absolute asset paths (`/assets/...`,
+`/favicon/...`). Those are exactly correct once `avengers-doomsday.in/` (an
+apex custom domain) is actually live and DNS-configured — but GitHub Pages
+*always* also serves a project repo's build at its own
+`https://<user>.github.io/<repo>/` subpath, custom domain or not. Root-
+absolute paths there ask the browser for assets at the *github.io domain
+root*, not the `/repo/` subpath — a 404 on every JS/CSS file, rendering a
+completely blank page. This was caught during Phase 13 by deploying and
+checking the raw `github.io/doomsday/` URL, which is the only way to
+verify a Pages deployment before DNS for the custom domain is actually
+pointed at it.
+
+`base: './'` fixes this without hardcoding `/doomsday/` anywhere (which
+would in turn break the apex custom domain once DNS is live, and would
+need updating if the repo is ever renamed): every asset URL becomes
+relative to wherever `index.html` itself was actually served from, so it
+resolves correctly whether that's a domain root or a `/repo-name/` subpath.
+
+**A second, non-obvious bug this surfaced**: the GitHub Pages deep-link
+redirect script (see "GitHub Pages deep-link resolution" below) used to sit
+first in `<head>`, before any other tag. With relative asset paths, that
+broke deep links specifically: the script's own `history.replaceState`
+call rewrites `location.href` *before* the parser reaches
+`<script type="module" src="./assets/...">` a few lines later — and a
+relative `src` is resolved against whatever URL is current *at the moment
+the parser reaches that tag*, not the URL the document was originally
+fetched from. So the module script's relative path silently resolved
+against the just-restored deep-link path instead of the real page root,
+404ing on every deep link (never on a plain `/` load, since nothing needs
+restoring there — this is why it wasn't caught until deep links were
+specifically re-tested against a true GitHub-Pages-shaped 404 emulation,
+not `vite preview`, which has its own SPA fallback that masks this entirely).
+The fix was to move that inline script to the end of `<body>`, after the
+module script tag: a classic inline script always executes at parse time
+regardless of position, and a `type="module"` script is always deferred
+until after the document finishes parsing regardless of position either —
+so placing the redirect script after the module tag still guarantees it
+runs before `main.tsx`'s code does, while now leaving the module tag's own
+`src` to resolve while the URL is still untouched.
+
+Only reachable by testing the *actual* GitHub Pages 404-then-redirect
+behavior end-to-end (a small throwaway Node static file server that serves
+the literal file or `404.html` with a real `404` status, mirroring GitHub
+Pages exactly) — `vite preview` and generic static-file servers
+(`serve`/`http-server` defaults) both silently fall back to `index.html`
+for any unmatched path, which never exercises this code path at all.
 
 ### Custom domain (`CNAME`)
 
@@ -1008,20 +1048,26 @@ no router change):
    to the app. If JS is unavailable, this script never runs and the
    existing plain, branded, JS-free 404 markup (unchanged from Phase 7)
    is what the visitor sees.
-2. `index.html` runs a matching inline script, first in `<head>` (so it
-   always executes before `src/main.tsx` mounts React and before
-   `BrowserRouter` reads `window.location`): if a saved path exists, it
-   restores it via `history.replaceState` and clears the sessionStorage
-   entry, then the app mounts and **React Router decides** whether that
-   path is a real route (renders the matching page) or not (renders
-   `NotFound`, `noindex`) — exactly as it would for any other load.
+2. `index.html` runs a matching inline script, placed at the end of
+   `<body>` — deliberately *after* `<script type="module" src="./assets/...">`,
+   not before it (see "Base path" above for why: with the relative `base`
+   that section explains, position relative to the module tag matters).
+   A classic inline script still always executes before a deferred
+   `type="module"` script's own code runs, regardless of which one appears
+   first in the document, so this still always runs before `src/main.tsx`
+   mounts React and before `BrowserRouter` reads `window.location`: if a
+   saved path exists, it restores it via `history.replaceState` and clears
+   the sessionStorage entry, then the app mounts and **React Router
+   decides** whether that path is a real route (renders the matching page)
+   or not (renders `NotFound`, `noindex`) — exactly as it would for any
+   other load.
 
 Both scripts are a handful of lines each, run only on the exact condition
 that needs them (a no-op on every normal navigation, since nothing is ever
-in `sessionStorage` otherwise), and require no change to `src/App.tsx`,
-`vite.config.ts`, or the deploy workflow — `BrowserRouter`'s route table
-never sees anything different between a client-side navigation and a
-restored hard-navigation. This is a client-side redirect (`location.replace`,
+in `sessionStorage` otherwise), and require no change to `src/App.tsx` or
+the deploy workflow — `BrowserRouter`'s route table never sees anything
+different between a client-side navigation and a restored hard-navigation.
+This is a client-side redirect (`location.replace`,
 not an HTTP 301) followed by a `history.replaceState`, not a permanent
 redirect to the homepage: a genuinely invalid URL still ends up exactly
 where it should — its own address bar path, rendering the branded

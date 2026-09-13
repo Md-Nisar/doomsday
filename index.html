@@ -2,24 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!--
-      Pairs with public/404.html's redirect script: restores the originally
-      requested deep-link path (stored in sessionStorage before GitHub Pages'
-      404 fallback sent the browser here) before React Router ever reads
-      window.location, so the app boots straight into the correct route
-      instead of the homepage. Must run before src/main.tsx mounts the app —
-      placed first in <head>, and main.tsx's module script is deferred by
-      the browser regardless, so this always runs first. A no-op on every
-      normal navigation (nothing in sessionStorage to restore).
-    -->
-    <script>
-      (function () {
-        var redirect = sessionStorage.getItem('spa-redirect-path')
-        if (!redirect) return
-        sessionStorage.removeItem('spa-redirect-path')
-        history.replaceState(null, '', redirect)
-      })()
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="index, follow" />
     <meta
@@ -57,5 +39,37 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!--
+      Pairs with public/404.html's redirect script: restores the originally
+      requested deep-link path (stored in sessionStorage before GitHub Pages'
+      404 fallback sent the browser here) before React Router ever reads
+      window.location, so the app boots straight into the correct route
+      instead of the homepage. Deliberately placed AFTER the module script
+      tag above, not before it: `base: './'` (vite.config.ts) makes every
+      asset URL in this document — including that module script's own `src`
+      — relative, resolved against whatever URL is current at the moment
+      the parser reaches the tag. A classic inline script always runs
+      immediately at parse time, so putting this `history.replaceState`
+      first (as it used to be) rewrote the URL before the parser ever
+      reached the module tag, and the browser then resolved its relative
+      `src` against the *restored deep-link path* instead of the real
+      document root — silently 404ing the whole app on every deep link
+      (caught via a real GitHub Pages URL-structure emulation, not just
+      `vite preview`, which never exercises this path). Module scripts are
+      always deferred regardless of position, so this classic script still
+      runs — and finishes rewriting the URL — before main.tsx's deferred
+      code ever executes; it just needs to run after the module tag's `src`
+      has already been resolved and requested, which "after it in the
+      document" (rather than "before it") guarantees. A no-op on every
+      normal navigation (nothing in sessionStorage to restore).
+    -->
+    <script>
+      (function () {
+        var redirect = sessionStorage.getItem('spa-redirect-path')
+        if (!redirect) return
+        sessionStorage.removeItem('spa-redirect-path')
+        history.replaceState(null, '', redirect)
+      })()
+    </script>
   </body>
 </html>
