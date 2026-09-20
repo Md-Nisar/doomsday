@@ -1227,6 +1227,100 @@ what switching to it would involve. See "GitHub Pages deep-link resolution"
 under Routing above for how a hard navigation or refresh on a nested URL
 (e.g. `/news/some-slug`) is handled.
 
+## Analytics
+
+Lightweight GA4 (Google Analytics 4) measurement, added as a
+measurement-only phase — no redesign, no backend, no new runtime
+dependency. It uses gtag.js directly (the same script Google's own GA4
+snippet loads) rather than a wrapper package like `react-ga4`, since a
+SPA's entire integration surface here is "load one script, push a few
+events" — not enough to justify a dependency.
+
+### Configuration
+
+The GA4 Measurement ID lives in exactly one place: `GA_MEASUREMENT_ID` in
+`src/config/analytics.ts`. Nothing else in the app hardcodes it. To point
+the site at a different GA4 property, or to disable analytics entirely,
+change (or blank) that one constant — no other file needs touching. A
+Measurement ID is a public client-side identifier by design (every GA4
+site ships it in page source), not a secret, so committing it is safe;
+it is not an API key or credential.
+
+### Production-only gating
+
+`isAnalyticsEnabled()` (same file) is the single gate every analytics call
+goes through, and it checks one thing: `window.location.hostname ===
+siteConfig.domain` (`avengers-doomsday.in`). This means analytics is a
+no-op on `vite dev`, `vite preview`, any local static-file server, and the
+raw `github.io` project subpath — not because of a `DEV`/`PROD` build-mode
+flag, but because none of those hostnames can ever equal the production
+domain. A production *build* previewed anywhere other than the live domain
+still can't emit real GA4 data.
+
+### Architecture
+
+- `src/config/analytics.ts` — the Measurement ID and the production-only
+  gate described above.
+- `src/lib/analytics.ts` — `initAnalytics()` injects the `gtag.js` `<script
+  async>` tag and configures GA4 once, and `trackPageview(path, title)`
+  pushes a `page_view` event. Both are no-ops when
+  `isAnalyticsEnabled()` is false, and both are wrapped in `try/catch` —
+  a blocked or failed script load (ad blockers, offline) can never throw
+  into the app. `initAnalytics` passes `send_page_view: false` to gtag's
+  own `config` call, since this is a client-side-routed SPA: gtag's
+  automatic pageview only fires once, on the initial `window` load event,
+  and would otherwise miss every subsequent React Router navigation.
+- `src/components/common/Analytics.tsx` — a headless component (renders
+  `null`) mounted once inside `<BrowserRouter>` in `App.tsx`, alongside
+  `<Routes>` rather than inside `Layout`, so it observes every route
+  regardless of which lazy page is showing. Calls `initAnalytics()` once
+  on mount, then calls `trackPageview()` — using `useLocation()`'s
+  `pathname`/`search` — on the initial route and every subsequent
+  navigation, so there is exactly one `page_view` per route, including
+  the first, with the current production URL (`page_location` reads
+  `window.location.href` at fire time, so query strings are included and
+  it is never a stale/previous route).
+
+### Privacy / data minimization
+
+Only GA4's own standard, aggregated pageview measurement is sent —
+`page_location`, `page_path`, `page_title`. Nothing here reads or sends
+form contents, names, emails, or other personal identifiers, and nothing
+builds a custom user profile. This project has no existing
+cookie/consent banner or other consent mechanism, and this phase does not
+add one. GA4's default configuration (used as-is here, with no
+IP-anonymization or consent-mode code added) does set first-party
+measurement cookies and, depending on the visitor's jurisdiction, may
+require a cookie/consent notice under regimes like GDPR/ePrivacy or
+similar regional rules — that legal/consent determination and any banner
+implementation is explicitly out of scope for this phase and is flagged
+here as follow-up work for a dedicated privacy/consent phase, not
+something this README asserts compliance with.
+
+### Bundle impact
+
+No new dependency was installed — `gtag.js` itself is fetched from Google
+at runtime in production only, never bundled. The three new local files
+(`src/config/analytics.ts`, `src/lib/analytics.ts`,
+`src/components/common/Analytics.tsx`) add to the initial (eager) chunk,
+since `Analytics` is mounted unconditionally in `App.tsx`:
+
+| Asset | Before | After | Delta |
+| --- | --- | --- | --- |
+| Initial JS | 330.18 kB / 102.33 kB gzip | 330.90 kB / 102.62 kB gzip | +0.72 kB / +0.29 kB gzip |
+| Initial CSS | 22.55 kB / 4.85 kB gzip | 22.55 kB / 4.85 kB gzip | unchanged |
+
+("Before" is the Phase 13 GitHub Pages asset-path fix build, immediately
+preceding this phase.) No lazy route chunk changed size.
+
+### Error handling
+
+Every exported function in `src/lib/analytics.ts` is wrapped in
+`try/catch` and every call site is gated by `isAnalyticsEnabled()`
+first — a GA4/network failure (ad blocker, offline, Google outage) can
+change only whether a pageview is recorded, never the app's own
+rendering, routing, or countdown behavior.
+
 ## Performance
 
 ### Philosophy
@@ -1528,9 +1622,10 @@ render. None of that is implemented yet.
 
 Vite's default build already hashes asset filenames
 (`assets/index-<hash>.js`/`.css`), which is cache-friendly for GitHub Pages
-or any static host. There are no third-party scripts, no analytics, and no
-tracking requests — the only external network requests the site makes are
-to `fonts.googleapis.com`/`fonts.gstatic.com`. No service worker was added.
+or any static host. The only external network requests the production site
+makes are to `fonts.googleapis.com`/`fonts.gstatic.com` and, in
+production only, GA4's `googletagmanager.com` script — see "Analytics"
+above. No service worker was added.
 
 ### Performance budget / guardrails
 

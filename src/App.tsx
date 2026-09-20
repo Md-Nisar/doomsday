@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { RouteFallback } from './components/common'
+import { Analytics, RouteFallback } from './components/common'
 import { Layout } from './components/layout'
 import { CATEGORIES } from './data/categories'
 import { Home } from './pages/Home'
@@ -56,6 +56,7 @@ const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m
 function App() {
   return (
     <BrowserRouter>
+      <Analytics />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
