@@ -40,8 +40,12 @@ export function initAnalytics() {
 
   try {
     window.dataLayer = window.dataLayer || []
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer.push(args)
+    // Must push the real `arguments` object, not a rest-param array:
+    // gtag.js only treats `Arguments` entries as gtag commands and silently
+    // ignores plain arrays, so `(...args) => push(args)` loads the script
+    // but never sends a single `collect` hit.
+    window.gtag = function gtag() {
+      window.dataLayer.push(arguments)
     }
 
     window.gtag('js', new Date())
