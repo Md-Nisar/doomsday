@@ -45,6 +45,50 @@
   display: none;
 }
 
+/* Keeps the wordmark on one line beside the search + menu buttons on narrow phones. */
+@media (max-width: 400px) {
+  .wordmark {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Matches IconButton's 40px hit area; a link because it navigates. */
+.searchLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  color: var(--color-text-primary);
+  transition:
+    background-color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard);
+}
+
+.searchLink svg {
+  width: 20px;
+  height: 20px;
+}
+
+.searchLink:hover,
+.searchLink[aria-current='page'] {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+.searchLink[aria-current='page'] {
+  color: var(--color-accent);
+}
+
 .navList {
   display: flex;
   gap: var(--space-6);

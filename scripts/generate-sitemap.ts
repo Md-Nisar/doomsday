@@ -1,6 +1,7 @@
 import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { CATEGORIES } from '../src/data/categories'
+import { SEARCH_PATH } from '../src/data/navigation'
 import {
   getCast,
   getCharacters,
@@ -64,6 +65,10 @@ async function collectPaths(): Promise<string[]> {
   if (timeline.length > 0) {
     paths.push(CATEGORIES.timeline.path)
   }
+
+  // The bare search landing page only — `?q=` result pages are noindex and
+  // deliberately never listed.
+  paths.push(SEARCH_PATH)
 
   return paths
 }

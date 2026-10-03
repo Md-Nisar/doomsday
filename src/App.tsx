@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Analytics, RouteFallback } from './components/common'
 import { Layout } from './components/layout'
 import { CATEGORIES } from './data/categories'
+import { SEARCH_PATH } from './data/navigation'
 import { Home } from './pages/Home'
 
 /**
@@ -50,6 +51,8 @@ const RumorDetailPage = lazy(() =>
 )
 
 const TimelinePage = lazy(() => import('./pages/timeline/TimelinePage').then((m) => ({ default: m.TimelinePage })))
+
+const SearchPage = lazy(() => import('./pages/search/SearchPage').then((m) => ({ default: m.SearchPage })))
 
 const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m.NotFound })))
 
@@ -168,6 +171,15 @@ function App() {
             element={
               <Suspense fallback={<RouteFallback />}>
                 <TimelinePage />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path={SEARCH_PATH}
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <SearchPage />
               </Suspense>
             }
           />

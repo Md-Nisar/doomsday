@@ -16,6 +16,8 @@ interface ContentCardProps {
   meta?: ReactNode
   /** A `MediaThumb` (or other visual), rendered full-bleed above the card body. Omit entirely for card types with no media concept (rumors, theories, timeline) — this never renders a placeholder on its own. */
   media?: ReactNode
+  /** Defaults to `h2`; pass `h3` when the card sits under a section heading. */
+  headingLevel?: 'h2' | 'h3'
 }
 
 /**
@@ -23,7 +25,17 @@ interface ContentCardProps {
  * characters, theories, rumors, timeline) — differences between entity
  * types are just which props get passed, not a new component per category.
  */
-export function ContentCard({ href, eyebrow, title, description, status, badge, meta, media }: ContentCardProps) {
+export function ContentCard({
+  href,
+  eyebrow,
+  title,
+  description,
+  status,
+  badge,
+  meta,
+  media,
+  headingLevel: Heading = 'h2',
+}: ContentCardProps) {
   const body = (
     <>
       {media && <div className={styles.media}>{media}</div>}
@@ -31,7 +43,7 @@ export function ContentCard({ href, eyebrow, title, description, status, badge, 
         {eyebrow && <span className="text-label">{eyebrow}</span>}
         {badge ?? (status && <StatusBadge status={status} />)}
       </div>
-      <h2 className="text-h3">{title}</h2>
+      <Heading className="text-h3">{title}</Heading>
       <p className="text-caption">{description}</p>
       {meta && <div className={`text-metadata ${styles.meta}`}>{meta}</div>}
     </>

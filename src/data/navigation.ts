@@ -11,6 +11,9 @@ export interface NavItem {
  * the other way around: a route existing is not enough to enable its nav
  * entry.
  */
+/** Not a content category, so it lives beside the nav rather than in `CATEGORIES`. Shared by the header, the route table and the sitemap. */
+export const SEARCH_PATH = '/search'
+
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'News', href: '/news' },

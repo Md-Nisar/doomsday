@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Container, IconButton, MenuIcon, CloseIcon } from '../common'
-import { NAV_ITEMS, type NavItem } from '../../data/navigation'
+import { Link, useLocation } from 'react-router-dom'
+import { Container, IconButton, MenuIcon, CloseIcon, SearchIcon } from '../common'
+import { NAV_ITEMS, SEARCH_PATH, type NavItem } from '../../data/navigation'
 import styles from './Header.module.css'
 
 interface NavLinkProps {
@@ -34,6 +34,7 @@ function NavLink({ item, className, onClick }: NavLinkProps) {
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const onSearchPage = useLocation().pathname === SEARCH_PATH
 
   return (
     <header className={styles.header}>
@@ -55,13 +56,24 @@ export function Header() {
           </ul>
         </nav>
 
-        <IconButton
-          className={styles.menuToggle}
-          icon={isMenuOpen ? <CloseIcon /> : <MenuIcon />}
-          label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={isMenuOpen}
-          onClick={() => setIsMenuOpen((open) => !open)}
-        />
+        <div className={styles.actions}>
+          <Link
+            to={SEARCH_PATH}
+            className={styles.searchLink}
+            aria-label="Search"
+            aria-current={onSearchPage ? 'page' : undefined}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <SearchIcon aria-hidden="true" />
+          </Link>
+          <IconButton
+            className={styles.menuToggle}
+            icon={isMenuOpen ? <CloseIcon /> : <MenuIcon />}
+            label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen((open) => !open)}
+          />
+        </div>
       </Container>
 
       {isMenuOpen && (
