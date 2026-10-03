@@ -18,6 +18,11 @@ interface ContentCardProps {
   media?: ReactNode
   /** Defaults to `h2`; pass `h3` when the card sits under a section heading. */
   headingLevel?: 'h2' | 'h3'
+  /**
+   * Marks unconfirmed material (rumors, theories) with a dashed edge and no green hover — a shape cue, so it never looks confirmed.
+   * Purely presentational: the status badge remains the authoritative signal.
+   */
+  speculative?: boolean
 }
 
 /**
@@ -35,7 +40,11 @@ export function ContentCard({
   meta,
   media,
   headingLevel: Heading = 'h2',
+  speculative,
 }: ContentCardProps) {
+  // Defaults from the editorial status; pass explicitly for entities graded on another vocabulary (rumor lifecycle).
+  const isSpeculative = speculative ?? (status === 'rumor' || status === 'theory')
+  const cardClass = [styles.card, isSpeculative && styles.speculative].filter(Boolean).join(' ')
   const body = (
     <>
       {media && <div className={styles.media}>{media}</div>}
@@ -52,12 +61,16 @@ export function ContentCard({
   if (href) {
     return (
       <Link to={href} className={styles.link}>
-        <Card interactive className={styles.card}>
+        {/* tabIndex -1: the link is the single tab stop; the card only mirrors its hover/focus look. */}
+        <Card interactive tabIndex={-1} className={cardClass}>
           {body}
+          <span className={styles.cue} aria-hidden="true">
+            →
+          </span>
         </Card>
       </Link>
     )
   }
 
-  return <Card className={styles.card}>{body}</Card>
+  return <Card className={cardClass}>{body}</Card>
 }

@@ -1,6 +1,7 @@
 .divider {
   border: none;
   height: 1px;
-  background: var(--color-border);
+  /* Fades at both ends so a divider reads as a seam in the page, not a box edge. */
+  background: linear-gradient(90deg, transparent, var(--color-border-strong) 20%, var(--color-border-strong) 80%, transparent);
   margin: 0;
 }

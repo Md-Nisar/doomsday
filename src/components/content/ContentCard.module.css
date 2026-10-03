@@ -2,6 +2,23 @@
   display: block;
   color: inherit;
   text-decoration: none;
+  border-radius: var(--radius-lg);
+}
+
+/* The link is the one tab stop; its card mirrors the hover treatment on keyboard focus. */
+.link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.link:focus-visible .card {
+  border-color: rgba(var(--color-accent-rgb), 0.6);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-edge-accent);
+}
+
+.link:focus-visible .card::before {
+  opacity: 0.9;
 }
 
 .card {
@@ -14,6 +31,12 @@
   overflow: hidden;
 }
 
+/* Controlled zoom on the real image only (the transition lives on MediaThumb's image). */
+.link:hover .media img,
+.link:focus-visible .media img {
+  transform: scale(1.04);
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -21,6 +44,65 @@
   gap: var(--space-3);
 }
 
+.card h2,
+.card h3 {
+  transition: color var(--duration-base) var(--ease-standard);
+}
+
+.link:hover .card h2,
+.link:hover .card h3,
+.link:focus-visible .card h2,
+.link:focus-visible .card h3 {
+  color: var(--color-accent);
+}
+
 .meta {
   color: var(--color-text-faint);
+}
+
+/* "Open" cue, always visible (so interactivity never depends on hover); it only nudges on hover. */
+.cue {
+  margin-block-start: auto;
+  align-self: flex-end;
+  color: var(--color-text-faint);
+  font-family: var(--font-display);
+  line-height: 1;
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-standard);
+}
+
+.link:hover .cue,
+.link:focus-visible .cue {
+  color: var(--color-accent);
+  transform: translateX(4px);
+}
+
+/*
+ * Speculative content (rumors, theories): a dashed edge, a shape cue that
+ * survives without color, and no green hover edge — green is reserved for
+ * sourced content, so a claim never glows like a confirmed fact.
+ */
+.card.speculative {
+  border-style: dashed;
+  border-color: var(--color-border-strong);
+}
+
+.link:hover .speculative,
+.link:focus-visible .speculative {
+  border-color: var(--color-text-faint);
+  box-shadow: var(--shadow-md);
+}
+
+.card.speculative::before {
+  display: none;
+}
+
+.link:hover .speculative h2,
+.link:hover .speculative h3,
+.link:focus-visible .speculative h2,
+.link:focus-visible .speculative h3,
+.link:hover .speculative .cue,
+.link:focus-visible .speculative .cue {
+  color: var(--color-text-primary);
 }

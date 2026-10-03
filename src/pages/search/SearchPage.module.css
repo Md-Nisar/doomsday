@@ -22,14 +22,19 @@
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
+  transition:
+    border-color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard);
 }
 
 .input::placeholder {
   color: var(--color-text-faint);
 }
 
+/* The global 2px outline stays; the halo just makes the active field unmistakable. */
 .input:focus-visible {
   border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb), 0.16);
 }
 
 .count {
@@ -78,16 +83,28 @@
   overflow-wrap: anywhere;
 }
 
-.chip:hover {
-  color: var(--color-accent);
+.chip {
+  transition:
+    color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard),
+    background-color var(--duration-base) var(--ease-standard);
 }
 
+.chip:hover {
+  color: var(--color-accent);
+  border-color: rgba(var(--color-accent-rgb), 0.55);
+  background: var(--color-accent-muted);
+}
+
+/* "Nothing found" is a state, not an error: a dashed, quiet panel. */
 .empty {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-2);
   padding: var(--space-6);
+  border-style: dashed;
+  border-color: var(--color-border-strong);
   overflow-wrap: anywhere;
 }
 
@@ -100,8 +117,30 @@
   color: var(--color-text-muted);
 }
 
+/* Connected entities: set apart by an accent rule on the leading edge. */
 .connected {
   margin-block-start: var(--space-6);
+  padding-inline-start: var(--space-4);
+  border-inline-start: 2px solid rgba(var(--color-accent-rgb), 0.5);
+}
+
+/* New result groups ease in once when they mount (a new query, or back/forward). */
+@media (prefers-reduced-motion: no-preference) {
+  .group,
+  .empty,
+  .connected {
+    animation: rise-in var(--duration-enter) var(--ease-out) backwards;
+  }
+
+  .group:nth-of-type(2) {
+    animation-delay: 60ms;
+  }
+  .group:nth-of-type(3) {
+    animation-delay: 120ms;
+  }
+  .group:nth-of-type(n + 4) {
+    animation-delay: 180ms;
+  }
 }
 
 .connected > h2 {

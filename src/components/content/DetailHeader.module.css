@@ -6,9 +6,13 @@
   text-decoration: none;
 }
 
+.back {
+  transition: color var(--duration-base) var(--ease-standard);
+}
+
 .back:hover,
 .back:focus-visible {
-  color: var(--color-text-primary);
+  color: var(--color-accent);
 }
 
 .back:focus-visible {
@@ -22,6 +26,11 @@
   align-items: center;
   gap: var(--space-3);
   margin-block-start: var(--space-4);
+}
+
+.titleRow h1 {
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .meta {

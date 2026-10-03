@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Container, SectionHeading } from '../common'
+import { Container, Reveal, SectionHeading } from '../common'
 import { ContentCard } from '../content'
 import { CATEGORIES } from '../../data/categories'
 import { useContentList } from '../../hooks/useContentList'
@@ -33,12 +33,14 @@ export function Explore() {
   return (
     <section className={styles.section}>
       <Container>
-        <SectionHeading
-          eyebrow="Inside Doomsday"
-          title="What's confirmed so far"
-          description="Sourced and up to date — with links to everything as it's added."
-        />
-        <div className={styles.grid}>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Inside Doomsday"
+            title="What's confirmed so far"
+            description="Sourced and up to date — with links to everything as it's added."
+          />
+        </Reveal>
+        <Reveal className={styles.grid} index={1}>
           {latestNews && (
             <ContentCard
               href={`${CATEGORIES.news.path}/${latestNews.slug}`}
@@ -68,10 +70,10 @@ export function Explore() {
               status={character.status}
             />
           ))}
-        </div>
+        </Reveal>
 
         {recentTimeline.length > 0 && (
-          <div className={styles.timeline}>
+          <Reveal className={styles.timeline}>
             {recentTimeline.map((event) => (
               <div key={event.id} className={styles.timelineRow}>
                 <span className="text-metadata">{formatContentDate(event.date)}</span>
@@ -81,7 +83,7 @@ export function Explore() {
             <Link to={CATEGORIES.timeline.path} className={`text-label ${styles.timelineLink}`}>
               View full timeline →
             </Link>
-          </div>
+          </Reveal>
         )}
       </Container>
     </section>

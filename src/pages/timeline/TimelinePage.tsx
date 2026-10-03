@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Container, EmptyState, SectionHeading, StatusBadge } from '../../components/common'
+import { Card, Container, EmptyState, Reveal, SectionHeading, StatusBadge } from '../../components/common'
 import { SourceAttributionView } from '../../components/content'
 import { CATEGORIES } from '../../data/categories'
 import { useContentList } from '../../hooks/useContentList'
@@ -62,8 +62,8 @@ export function TimelinePage() {
       {items.length > 0 && (
         <ol className={styles.list}>
           {items.map(({ event, characterNames, characterSlugs }) => (
-            <li key={event.id}>
-              <Card>
+            <Reveal as="li" key={event.id} className={styles.event}>
+              <Card className={styles.card}>
                 <div className={styles.eventHeader}>
                   <span className="text-label">{EVENT_TYPE_LABEL[event.type]}</span>
                   <StatusBadge status={event.status} />
@@ -89,7 +89,7 @@ export function TimelinePage() {
                   ))}
                 </div>
               </Card>
-            </li>
+            </Reveal>
           ))}
         </ol>
       )}

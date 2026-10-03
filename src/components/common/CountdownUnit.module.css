@@ -32,6 +32,21 @@
   font-variant-numeric: tabular-nums;
   line-height: 1;
   color: var(--countdown-text, var(--color-text-primary));
+  text-shadow: 0 0 28px color-mix(in srgb, var(--countdown-accent, var(--color-accent-solid)) 45%, transparent);
+}
+
+/* A value change nudges the digits in from above — one short keyframe, not a loop. */
+@keyframes digit-tick {
+  from {
+    opacity: 0.45;
+    transform: translateY(-5px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .value {
+    animation: digit-tick 220ms var(--ease-out);
+  }
 }
 
 @media (max-width: 420px) {

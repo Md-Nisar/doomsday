@@ -1,5 +1,21 @@
 .section {
+  position: relative;
   padding-block: var(--space-9);
+}
+
+/* A thin accent horizon where the countdown hands over to the content —
+   one continuous line down the page rather than a hard section break. */
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--color-accent-rgb), 0.5) 50%,
+    transparent
+  );
 }
 
 .grid {

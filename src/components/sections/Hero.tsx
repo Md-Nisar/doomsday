@@ -11,7 +11,7 @@ export function Hero() {
       <div className={`${styles.backdrop} ambient-glow`} aria-hidden="true" />
       <div className={styles.grid} aria-hidden="true" />
       <Container className={styles.inner}>
-        <span className="text-label">Unofficial fan project</span>
+        <span className={`text-label ${styles.eyebrow}`}>Unofficial fan project</span>
         <h1 id="hero-heading" className={`text-display ${styles.title}`}>
           AVENGERS: DOOMSDAY
         </h1>

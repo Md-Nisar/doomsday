@@ -1,11 +1,64 @@
 .list {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
   max-width: var(--content-max-width);
   list-style: none;
-  padding: 0;
+  padding: 0 0 0 var(--space-6);
   margin: 0;
+}
+
+/* The spine: a vertical line that fades out at both ends. */
+.list::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 7px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(var(--color-accent-rgb), 0.6) 8%,
+    rgba(var(--color-accent-rgb), 0.25) 92%,
+    transparent
+  );
+}
+
+.event {
+  position: relative;
+}
+
+/* An event node on the spine. A ring + dot, so it reads as a point in order, not just a colored mark. */
+.event::before {
+  content: '';
+  position: absolute;
+  top: var(--space-5);
+  left: calc(-1 * var(--space-6) + 2px);
+  width: 11px;
+  height: 11px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg);
+  border: 2px solid var(--color-accent-solid);
+  transition:
+    background-color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard);
+}
+
+.event:hover::before,
+.event:focus-within::before {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb), 0.2);
+}
+
+.card {
+  transition: border-color var(--duration-base) var(--ease-standard);
+}
+
+.event:hover .card,
+.event:focus-within .card {
+  border-color: var(--color-border-strong);
 }
 
 .eventHeader {
@@ -25,4 +78,11 @@
 .link {
   display: inline-block;
   color: var(--color-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--duration-base) var(--ease-standard);
+}
+
+.link:hover {
+  border-bottom-color: currentColor;
 }

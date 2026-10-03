@@ -15,6 +15,16 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+/* Cinematic grade over real images: darkens the lower edge so overlays stay legible. */
+.thumb:has(.image)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(4, 5, 7, 0.55), transparent 45%);
 }
 
 .fallback {
@@ -55,12 +65,43 @@
     var(--color-surface-elevated);
 }
 
+/* Depth for the no-image fallback: a faint grid fading to the center, and an inset
+   frame like a viewfinder. Purely abstract — no likeness, no imagery. */
+.fallback::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 75%);
+}
+
+.fallback::after {
+  content: '';
+  position: absolute;
+  inset: var(--space-2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  pointer-events: none;
+}
+
 .monogram {
+  position: relative;
   font-family: var(--font-display);
   font-weight: var(--font-weight-bold);
   font-size: 1.75rem;
   letter-spacing: var(--tracking-wide);
   color: var(--color-text-primary);
+  text-shadow: 0 0 24px rgba(var(--color-accent-rgb), 0.55);
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+/* Fallback hover: the monogram drifts out a touch (the card owns the hover, not the thumb). */
+:global(a):hover .monogram,
+:global(a):focus-visible .monogram {
+  transform: scale(1.08);
 }
 
 .fallbackIcon {
@@ -78,7 +119,9 @@
 
 /* No monogram (e.g. trailer/video thumbnails) — the icon is the whole fallback, centered and full-size, matching pre-existing behavior. */
 .fallback:not(:has(.monogram)) .fallbackIcon {
-  position: static;
+  position: relative;
+  top: auto;
+  right: auto;
   opacity: 1;
 }
 
@@ -97,7 +140,19 @@
   width: 2rem;
   height: 2rem;
   border-radius: var(--radius-full);
+  z-index: 1;
   background: var(--color-overlay);
   color: var(--color-accent-foreground);
   border: 1px solid var(--color-border-strong);
+  transition:
+    background-color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard),
+    transform var(--duration-base) var(--ease-out);
+}
+
+:global(a):hover .playIndicator,
+:global(a):focus-visible .playIndicator {
+  background: var(--color-accent-solid);
+  border-color: var(--color-accent);
+  transform: scale(1.12);
 }

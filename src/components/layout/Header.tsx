@@ -7,7 +7,13 @@ import styles from './Header.module.css'
 interface NavLinkProps {
   item: NavItem
   className: string
+  pathname: string
   onClick?: () => void
+}
+
+/** Home matches only itself; a section also owns its detail pages (`/news` → `/news/:slug`). */
+function isCurrent(href: string, pathname: string): boolean {
+  return href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)
 }
 
 /**
@@ -15,7 +21,7 @@ interface NavLinkProps {
  * no page worth visiting yet, so they render as disabled labels with a
  * "Soon" marker instead of a link to an empty page.
  */
-function NavLink({ item, className, onClick }: NavLinkProps) {
+function NavLink({ item, className, pathname, onClick }: NavLinkProps) {
   if (!item.href) {
     return (
       <span className={`${className} ${styles.disabled}`} aria-disabled="true">
@@ -26,7 +32,12 @@ function NavLink({ item, className, onClick }: NavLinkProps) {
   }
 
   return (
-    <Link to={item.href} className={className} onClick={onClick}>
+    <Link
+      to={item.href}
+      className={className}
+      aria-current={isCurrent(item.href, pathname) ? 'page' : undefined}
+      onClick={onClick}
+    >
       {item.label}
     </Link>
   )
@@ -34,7 +45,8 @@ function NavLink({ item, className, onClick }: NavLinkProps) {
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const onSearchPage = useLocation().pathname === SEARCH_PATH
+  const { pathname } = useLocation()
+  const onSearchPage = pathname === SEARCH_PATH
 
   return (
     <header className={styles.header}>
@@ -50,7 +62,7 @@ export function Header() {
           <ul className={styles.navList}>
             {NAV_ITEMS.map((item) => (
               <li key={item.label}>
-                <NavLink item={item} className={`text-label ${styles.navLink}`} />
+                <NavLink item={item} className={`text-label ${styles.navLink}`} pathname={pathname} />
               </li>
             ))}
           </ul>
@@ -81,7 +93,12 @@ export function Header() {
           <ul>
             {NAV_ITEMS.map((item) => (
               <li key={item.label}>
-                <NavLink item={item} className="text-h3" onClick={() => setIsMenuOpen(false)} />
+                <NavLink
+                  item={item}
+                  className={`text-h3 ${styles.mobileLink}`}
+                  pathname={pathname}
+                  onClick={() => setIsMenuOpen(false)}
+                />
               </li>
             ))}
           </ul>

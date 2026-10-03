@@ -7,6 +7,16 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* A hairline of accent light under the bar; adds no height. */
+.header::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(var(--color-accent-rgb), 0.35) 50%, transparent);
+}
+
 .skipLink {
   position: absolute;
   left: var(--space-4);
@@ -39,6 +49,7 @@
   letter-spacing: var(--tracking-wide);
   color: var(--color-text-primary);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav {
@@ -77,6 +88,11 @@
 .searchLink svg {
   width: 20px;
   height: 20px;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.searchLink:hover svg {
+  transform: scale(1.1);
 }
 
 .searchLink:hover,
@@ -91,16 +107,45 @@
 
 .navList {
   display: flex;
-  gap: var(--space-6);
+  gap: var(--space-5);
 }
 
 .navLink {
+  position: relative;
+  display: inline-block;
+  padding-block: var(--space-2);
   text-decoration: none;
   transition: color var(--duration-base) var(--ease-standard);
 }
 
+/* The underline is the non-color cue for "you are here" and for hover. */
+.navLink::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
 .navLink:hover {
   color: var(--color-text-primary);
+}
+
+.navLink[aria-current='page'] {
+  color: var(--color-text-primary);
+}
+
+.navLink:hover::after,
+.navLink[aria-current='page']::after {
+  transform: scaleX(1);
+}
+
+.navLink[aria-current='page']::after {
+  box-shadow: 0 0 10px rgba(var(--color-accent-rgb), 0.7);
 }
 
 .mobileNav {
@@ -118,6 +163,13 @@
 .mobileNav a {
   text-decoration: none;
   color: var(--color-text-primary);
+}
+
+/* Active page: a bar plus accent color, so it isn't conveyed by color alone. */
+.mobileLink[aria-current='page'] {
+  color: var(--color-accent);
+  padding-inline-start: var(--space-3);
+  border-inline-start: 2px solid var(--color-accent);
 }
 
 .disabled {
@@ -141,7 +193,15 @@
   padding: 0.125rem var(--space-2);
 }
 
-@media (min-width: 768px) {
+/* The dropdown opens over content, so it only fades — it never changes layout height mid-animation. */
+@media (prefers-reduced-motion: no-preference) {
+  .mobileNav {
+    animation: fade-in var(--duration-base) var(--ease-out);
+  }
+}
+
+/* The full nav (8 items + the "Soon" badge) needs ~1060px beside the wordmark and search, so tablets keep the menu button. */
+@media (min-width: 1100px) {
   .nav {
     display: block;
   }

@@ -1,6 +1,12 @@
 .countdownSection {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-block: var(--space-9);
+}
+
+/* The reveal wrapper is a flex item here; keep the panel full width. */
+.countdownReveal {
+  width: 100%;
 }

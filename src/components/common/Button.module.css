@@ -41,7 +41,13 @@
 }
 
 .primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent-solid) 82%, white);
   box-shadow: var(--shadow-glow-accent);
+}
+
+.primary:active:not(:disabled) {
+  background: var(--color-accent-solid);
+  box-shadow: none;
 }
 
 .secondary {

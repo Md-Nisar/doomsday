@@ -43,8 +43,15 @@
   border-radius: var(--radius-sm);
 }
 
+.link {
+  transition:
+    color var(--duration-base) var(--ease-standard),
+    transform var(--duration-base) var(--ease-out);
+}
+
 .link:hover {
   color: var(--color-accent);
+  transform: translateX(3px);
 }
 
 .link:focus-visible {

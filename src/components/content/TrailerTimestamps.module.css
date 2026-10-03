@@ -28,8 +28,14 @@
   cursor: pointer;
 }
 
+button.time {
+  transition: color var(--duration-base) var(--ease-standard);
+}
+
 button.time:hover {
   text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--color-text-primary);
 }
 
 button.time:focus-visible {

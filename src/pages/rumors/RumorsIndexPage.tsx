@@ -82,6 +82,7 @@ export function RumorsIndexPage() {
               title={rumor.title}
               description={rumor.summary}
               badge={<RumorStatusBadge status={rumor.status} />}
+              speculative={rumor.status !== 'CONFIRMED'}
               meta={
                 <>
                   {formatContentDate(rumor.lastUpdatedAt ?? rumor.firstReportedAt)}

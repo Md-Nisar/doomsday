@@ -8,7 +8,7 @@ import styles from './RouteFallback.module.css'
  */
 export function RouteFallback() {
   return (
-    <Container as="main" id="main-content" className={styles.wrapper}>
+    <Container as="main" id="main-content" data-entry="none" className={styles.wrapper}>
       <p className="text-caption">Loading…</p>
     </Container>
   )

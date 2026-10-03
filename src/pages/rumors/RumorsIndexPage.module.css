@@ -19,8 +19,16 @@
   cursor: pointer;
 }
 
+.filterButton {
+  transition:
+    color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard),
+    background-color var(--duration-base) var(--ease-standard);
+}
+
 .filterButton:hover {
   color: var(--color-text-primary);
+  border-color: var(--color-text-faint);
 }
 
 .filterButton:focus-visible {

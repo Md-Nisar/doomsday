@@ -105,6 +105,10 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.55);
+  /* A hovered/active surface: a green hairline edge plus a faint halo, not a bloom. */
+  --shadow-edge-accent:
+    0 0 0 1px rgba(var(--color-accent-rgb), 0.55), 0 12px 32px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(var(--color-accent-rgb), 0.14);
   --shadow-glow-accent:
     0 0 0 1px rgba(var(--color-accent-rgb), 0.4), 0 0 32px rgba(var(--color-accent-rgb), 0.25);
 
@@ -115,6 +119,12 @@
   --duration-ambient: 16s;
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  /* Long settle — entrances and reveals only, never hover feedback. */
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-enter: 320ms;
+  --duration-reveal: 560ms;
+  --reveal-distance: 14px;
+  --stagger-step: 70ms;
 
   /* ---- Layering ---- */
   --z-header: 40;

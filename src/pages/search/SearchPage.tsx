@@ -61,6 +61,7 @@ function ResultCard({ doc, headingLevel }: { doc: SearchDocument; headingLevel: 
       description={doc.description}
       status={doc.status}
       badge={badge}
+      speculative={doc.type === 'theory' || (doc.rumorStatus !== undefined && doc.rumorStatus !== 'CONFIRMED')}
       meta={doc.meta}
       headingLevel={headingLevel}
     />

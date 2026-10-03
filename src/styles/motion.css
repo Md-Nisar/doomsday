@@ -33,3 +33,58 @@
     will-change: background-position;
   }
 }
+
+/*
+ * One-shot entrance keyframes (never looped). Each `from` is the hidden
+ * state, so the element's own styles are the end state — with animations
+ * off (reduced motion) the content is simply there.
+ */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /*
+   * Page entry. Every route renders its own <main>, so this plays once per
+   * navigation. `backwards` (not `both`) so no transform lingers afterwards
+   * and <main> never becomes a containing block. The homepage opts out
+   * (`data-entry="none"`): the hero choreographs its own entrance, and a fade
+   * over the LCP element would only delay it.
+   */
+  main:not([data-entry='none']) {
+    animation: page-enter var(--duration-enter) var(--ease-out) backwards;
+  }
+
+  /*
+   * Scroll reveal (components/common/Reveal). Content is hidden only when
+   * motion is allowed AND the observer has armed the element, so a visitor
+   * without JS or IntersectionObserver never gets invisible content.
+   */
+  .reveal[data-armed] {
+    transition:
+      opacity var(--duration-reveal) var(--ease-cinematic),
+      transform var(--duration-reveal) var(--ease-cinematic);
+    transition-delay: calc(var(--reveal-index, 0) * var(--stagger-step));
+  }
+
+  .reveal[data-armed]:not([data-visible]) {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+}

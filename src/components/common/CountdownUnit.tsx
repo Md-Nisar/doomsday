@@ -17,7 +17,8 @@ export function CountdownUnit({ value, label, size = 'md' }: CountdownUnitProps)
 
   return (
     <div className={classes}>
-      <span className={styles.value} aria-hidden="true">
+      {/* Keyed on the value so each change replays the one-shot tick keyframe (no-op under reduced motion). */}
+      <span key={value} className={styles.value} aria-hidden="true">
         {value}
       </span>
       <span className="text-label" aria-hidden="true">

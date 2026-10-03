@@ -4,6 +4,28 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Edge darkening so the glow reads as light falling into a dark room. Static. */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+    linear-gradient(to bottom, transparent 70%, var(--color-bg) 100%);
+}
+
+/* A hairline of accent light along the base of the frame. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--color-accent-rgb), 0.6) 50%, transparent);
+}
+
 .backdrop {
   position: absolute;
   inset: 0;
@@ -32,8 +54,30 @@
   padding-block: var(--space-10) var(--space-9);
 }
 
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* A short rule before the eyebrow — a frame marker, not decoration that carries meaning. */
+.eyebrow::before {
+  content: '';
+  width: 2rem;
+  height: 1px;
+  background: var(--color-accent);
+}
+
 .title {
   letter-spacing: var(--tracking-tight);
+  /* Light-to-green falloff; the lightest stop is the normal text color so contrast is unchanged where it matters. */
+  background: linear-gradient(180deg, var(--color-text-primary) 55%, #b9efd6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--color-text-primary);
+  text-shadow: none;
+  filter: drop-shadow(0 0 28px rgba(var(--color-accent-rgb), 0.28));
 }
 
 .tagline {
@@ -53,5 +97,37 @@
 @media (max-width: 480px) {
   .inner {
     padding-block: var(--space-8) var(--space-7);
+  }
+}
+
+/*
+ * Opening-frame choreography: everything plays once on load and settles.
+ * The grid fades up first, then the copy rises in a short stagger. Nothing
+ * here loops, and `backwards` fill means the settled state is just the
+ * element's normal styles.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .grid {
+    animation: fade-in 900ms var(--ease-out) backwards;
+  }
+
+  .inner > * {
+    animation: rise-in var(--duration-reveal) var(--ease-cinematic) backwards;
+  }
+
+  .inner > :nth-child(1) {
+    animation-delay: 80ms;
+  }
+  .inner > :nth-child(2) {
+    animation-delay: 160ms;
+  }
+  .inner > :nth-child(3) {
+    animation-delay: 260ms;
+  }
+  .inner > :nth-child(4) {
+    animation-delay: 340ms;
+  }
+  .inner > :nth-child(5) {
+    animation-delay: 400ms;
   }
 }

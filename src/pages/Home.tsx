@@ -1,5 +1,5 @@
 import { Countdown, Explore, Hero } from '../components/sections'
-import { Container, JsonLd, SectionHeading } from '../components/common'
+import { Container, JsonLd, Reveal, SectionHeading } from '../components/common'
 import { useDocumentSeo } from '../hooks/useDocumentSeo'
 import { seoConfig } from '../config/seo'
 import { buildWebPageJsonLd, buildWebSiteJsonLd } from '../lib/seo'
@@ -13,17 +13,21 @@ export function Home() {
     <>
       <JsonLd data={buildWebSiteJsonLd()} />
       <JsonLd data={buildWebPageJsonLd({ path: '/' })} />
-      <main id="main-content">
+      <main id="main-content" data-entry="none">
         <Hero />
 
         <Container as="section" className={styles.countdownSection}>
-          <SectionHeading
-            align="center"
-            eyebrow="Release date"
-            title="The wait, measured."
-            description="Calculated live in your browser — down to the second."
-          />
-          <Countdown />
+          <Reveal>
+            <SectionHeading
+              align="center"
+              eyebrow="Release date"
+              title="The wait, measured."
+              description="Calculated live in your browser — down to the second."
+            />
+          </Reveal>
+          <Reveal index={1} className={styles.countdownReveal}>
+            <Countdown />
+          </Reveal>
         </Container>
 
         <Explore />
